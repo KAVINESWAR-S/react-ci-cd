@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                url: 'https://github.com/<your-username>/react-portfolio-ci-cd.git'
+                url: 'https://github.com/KAVINESWAR-S/react-ci-cd.git'
             }
         }
 
