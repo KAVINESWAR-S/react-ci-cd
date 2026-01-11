@@ -1,7 +1,5 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./App.css";
+function hello() {
+    console.log("Hello from React CI/CD Project");
+}
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+hello();
