@@ -1,11 +1,17 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'nodejs'
+    }
+
     stages {
+
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                url: 'https://github.com/KAVINESWAR-S/react-ci-cd.git'
+                    credentialsId: 'github-token',
+                    url: 'https://github.com/<YOUR_GITHUB_USERNAME>/react-ci-cd.git'
             }
         }
 
@@ -15,9 +21,23 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Test') {
             steps {
                 sh 'npm test'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'sonar-scanner'
+                }
             }
         }
     }
