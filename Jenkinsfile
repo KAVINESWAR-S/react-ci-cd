@@ -1,8 +1,8 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'nodejs'
+    environment {
+        DOCKER_IMAGE = "kavineswar77/react-ci-cd"
     }
 
     stages {
@@ -10,8 +10,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    credentialsId: 'github-token',
-                    url: 'https://github.com/<YOUR_GITHUB_USERNAME>/react-ci-cd.git'
+                url: 'https://github.com/KAVINESWAR-S/react-ci-cd.git'
             }
         }
 
@@ -21,22 +20,35 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Run Tests') {
             steps {
-                sh 'npm test'
+                sh 'npm test -- --watch=false'
             }
         }
 
-        stage('Build') {
+        stage('Build App') {
             steps {
                 sh 'npm run build'
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('Build Docker Image') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'sonar-scanner'
+                sh 'docker build -t $DOCKER_IMAGE:latest .'
+            }
+        }
+
+        stage('Push Image to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                    docker login -u $DOCKER_USER -p $DOCKER_PASS
+                    docker push $DOCKER_IMAGE:latest
+                    '''
                 }
             }
         }
