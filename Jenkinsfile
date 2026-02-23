@@ -27,7 +27,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('cicd-pipline') {
-                    sh "${SONAR_SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=react-ci-cd -Dsonar.sources=. -Dsonar.sourceEncoding=UTF-8 -Dsonar.login=${SONAR_AUTH_TOKEN}"
+                    sh "${SONAR_SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=react-ci-cd -Dsonar.sources=. -Dsonar.sourceEncoding=UTF-8"
                 }
             }
         }
