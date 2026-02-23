@@ -24,7 +24,6 @@ pipeline {
                 sh 'npm test'
             }
         }
-
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('cicd-pipline') {
@@ -32,12 +31,12 @@ pipeline {
                     ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
                     -Dsonar.projectKey=react-ci-cd \
                     -Dsonar.sources=. \
-                    -Dsonar.sourceEncoding=UTF-8
+                    -Dsonar.sourceEncoding=UTF-8 \
+                    -Dsonar.login=$SONAR_AUTH_TOKEN
                     """
                 }
             }
         }
-
         stage('Quality Gate') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
