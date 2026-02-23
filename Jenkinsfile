@@ -20,9 +20,24 @@ pipeline {
                 sh 'npm test'
             }
         }
-        stage('Trivy Scan') {
+        stage('SonarQube Analysis') {
             steps {
-                sh 'trivy fs .'
+                withSonarQubeEnv('SonarQube') {
+                    sh """
+                    ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
+                    -Dsonar.projectKey=react-ci-cd \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=http://YOUR_SERVER_IP:9000 \
+                    -Dsonar.login=YOUR_TOKEN
+                    """
+                }
+            }
+        }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
     }
