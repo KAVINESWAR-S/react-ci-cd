@@ -20,5 +20,10 @@ pipeline {
                 sh 'npm test'
             }
         }
+        stage('Trivy Scan') {
+            steps {
+                sh 'trivy fs .'
+            }
+        }
     }
 }
