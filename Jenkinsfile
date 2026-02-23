@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        SONAR_SCANNER_HOME = tool 'SonarScanner'
+    }
+
     stages {
 
         stage('Install Dependencies') {
@@ -20,6 +24,7 @@ pipeline {
                 sh 'npm test'
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('cicd-pipline') {
@@ -27,12 +32,12 @@ pipeline {
                     ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
                     -Dsonar.projectKey=react-ci-cd \
                     -Dsonar.sources=. \
-                    -Dsonar.host.url=http://YOUR_SERVER_IP:9000 \
-                    -Dsonar.login=YOUR_TOKEN
+                    -Dsonar.sourceEncoding=UTF-8
                     """
                 }
             }
         }
+
         stage('Quality Gate') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
